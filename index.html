@@ -3,48 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Central Banco Gratidão - Todas Versões</title>
+<title>Central Banco Gratidão - V2 com Lixeirinha</title>
 <style>
-body{background:#000;color:#fff;font-family:system-ui;padding:20px}
-h1{color:gold;text-align:center;font-size:28px}
-.card{border:3px solid gold;border-radius:18px;padding:16px;margin:14px 0;background:#111}
-.btn{display:block;background:gold;color:#000;text-align:center;padding:16px;border-radius:30px;font-weight:900;text-decoration:none;margin-top:10px;font-size:18px}
-.btn2{display:block;background:#111;color:gold;border:2px solid gold;text-align:center;padding:12px;border-radius:30px;font-weight:900;text-decoration:none;margin-top:8px}
-small{color:#aaa}
+body{background:#000;color:#fff;font-family:system-ui;padding:10px;padding-bottom:90px}
+h1{color:gold;text-align:center;font-size:26px;margin-top:10px}
+.card{border:3px solid gold;border-radius:18px;padding:14px;margin:12px 0;background:#111;position:relative}
+.btn{display:block;background:gold;color:#000;text-align:center;padding:14px;border-radius:30px;font-weight:900;text-decoration:none;margin-top:10px;font-size:16px}
+.btn2{background:#111;color:gold;border:2px solid gold;border-radius:30px;padding:12px;font-weight:900;width:100%;margin-top:6px}
+.in{width:100%;background:#000;border:2px solid #333;border-radius:12px;padding:12px;color:#fff;margin:5px 0}
+.trash{position:absolute;top:8px;right:8px;background:#f44;color:#fff;border:none;padding:8px 12px;border-radius:10px;font-size:18px;font-weight:900}
+.top-add{border:3px dashed gold;border-radius:18px;padding:14px;margin:12px 0;background:#000}
 </style>
 </head>
 <body>
-<h1>📚 CENTRAL BANCO GRATIDÃO</h1>
-<p style="text-align:center;color:gold">Todas as suas versões vinculadas - Clique pra entrar</p>
+<h1>📚 CENTRAL BANCO GRATIDÃO V2</h1>
+<p style="text-align:center;color:gold">Com lixeirinha 🗑️ pra excluir quando quiser!</p>
 
-<div class="card">
-<h3 style="color:gold">⭐ V14.7 ULTRA - COM BOTÃO INSTALAR (A da sua foto)</h3>
-<small>Versão perfeita com instalar piscando</small>
-<a class="btn" href="https://bancogratidaooficial-ops.github.io/bancogratidaooficial-ops/" target="_blank">📲 ABRIR V14.7 ULTRA</a>
+<div class="top-add">
+<h3 style="color:gold">➕ ADICIONAR NOVA VERSÃO NO CENTRAL</h3>
+<input id="newNome" class="in" placeholder="Ex: V15.0 ULTRA DEFINITIVA">
+<input id="newLink" class="in" placeholder="Ex: https://bancogratidaooficial-ops.github.io/banco-v15/">
+<input id="newDesc" class="in" placeholder="Descrição curta (opcional)">
+<button class="btn" onclick="addVersao()">+ ADICIONAR NO CENTRAL</button>
 </div>
 
-<div class="card">
-<h3 style="color:gold">📖 V13.0 - VERSÃO ANTERIOR SALVA</h3>
-<small>A que você mostrou na foto com 3 arquivos</small>
-<a class="btn" href="https://bancogratidaooficial-ops.github.io/Banco-gratid-o-vers-o-13.0/" target="_blank">📖 ABRIR V13.0 COMPLETA</a>
-</div>
-
-<div class="card">
-<h3 style="color:gold">💎 V14.6 ULTRA 19 BOTÕES</h3>
-<small>Versão com lixeirinha e adicionar do celular</small>
-<a class="btn2" href="https://bancogratidaooficial-ops.github.io/bancogratidao-v14-6/" target="_blank">💎 ABRIR V14.6</a>
-</div>
-
-<div class="card" style="border:3px dashed gold">
-<h3 style="color:gold">➕ ADICIONAR NOVA VERSÃO</h3>
-<p>Pra adicionar outra versão, é só copiar um bloco e trocar o link</p>
-<small>Exemplo: https://bancogratidaooficial-ops.github.io/NOME-DO-REPOSITORIO/</small>
-</div>
+<div id="listaCentral"></div>
 
 <div class="card" style="text-align:center">
-<p>💾 Todas as versões estão salvas e vinculadas aqui!</p>
-<p style="color:gold">Salva esse link nos favoritos: essa é sua Central!</p>
+<p>💾 Todas as versões vinculadas aqui!</p>
+<p style="color:gold;font-size:12px">Salva esse link nos favoritos: essa é sua Central com lixeirinha!</p>
+<button class="btn2" onclick="if(confirm('Apagar TUDO da Central?')){localStorage.removeItem('centralV2');location.reload();}">🗑️ LIMPAR TUDO DA CENTRAL</button>
 </div>
 
+<script>
+let versoes = JSON.parse(localStorage.getItem('centralV2') || `[
+{"nome":"⭐ V14.7 ULTRA - COM BOTÃO INSTALAR","link":"https://bancogratidaooficial-ops.github.io/bancogratidao-/","desc":"Versão perfeita com instalar piscando - A da sua foto"},
+{"nome":"📖 V13.0 - VERSÃO ANTERIOR SALVA","link":"https://bancogratidaooficial-ops.github.io/Banco-gratid-o-vers-o-13.0/","desc":"A que você mostrou na foto com 3 arquivos"},
+{"nome":"💎 V14.6 ULTRA 19 BOTÕES","link":"https://bancogratidaooficial-ops.github.io/banco-gratidao-vers-o-14.0/","desc":"Versão com lixeirinha e adicionar do celular"}
+]`);
+
+function save(){localStorage.setItem('centralV2', JSON.stringify(versoes)); render();}
+
+function addVersao(){
+let n=document.getElementById('newNome').value.trim();
+let l=document.getElementById('newLink').value.trim();
+let d=document.getElementById('newDesc').value.trim();
+if(!n||!l){alert('Coloca nome e link!');return;}
+versoes.unshift({nome:n,link:l,desc:d||'Nova versão adicionada'});
+document.getElementById('newNome').value='';
+document.getElementById('newLink').value='';
+document.getElementById('newDesc').value='';
+save();
+alert('✅ Adicionado na Central!');
+}
+
+function delVersao(i){
+if(!confirm('Tirar essa versão do Central? (Não apaga o repositório, só tira da lista)'))return;
+versoes.splice(i,1);
+save();
+}
+
+function render(){
+let h='';
+versoes.forEach((v,i)=>{
+h+=`<div class="card">
+<button class="trash" onclick="delVersao(${i})">🗑️</button>
+<h3 style="color:gold;padding-right:50px">${v.nome}</h3>
+<small style="color:#aaa">${v.desc}</small><br>
+<small style="color:#666;font-size:10px">${v.link}</small>
+<a class="btn" href="${v.link}" target="_blank">📲 ABRIR ${v.nome.split(' ')[0]} ${v.nome.split(' ')[1]||''}</a>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+<a class="btn2" style="text-align:center;font-size:12px" href="${v.link}" target="_blank">🔗 Abrir</a>
+<button class="btn2" style="font-size:12px;background:#300;color:#f88;border-color:#f44" onclick="delVersao(${i})">🗑️ Tirar do Central</button>
+</div>
+</div>`;
+});
+document.getElementById('listaCentral').innerHTML=h;
+}
+render();
+</script>
 </body>
 </html>
